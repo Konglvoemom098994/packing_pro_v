@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#060608">
+<title>PACKING PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ TOKENS ═══════════════════════════ */
+:root{
+  --bg0:#060608;--bg1:#0d0d12;--bg2:#13131a;--bg3:#1c1c26;--bg4:#252533;
+  --s1:rgba(255,255,255,.05);--s2:rgba(255,255,255,.09);--s3:rgba(255,255,255,.14);
+  --b1:rgba(255,255,255,.08);--b2:rgba(255,255,255,.15);--b3:rgba(255,255,255,.26);
+  --acc:#00e5ff;--adim:rgba(0,229,255,.18);--aglow:rgba(0,229,255,.4);--afg:#001a20;
+  --red:#ff5555;--grn:#44ff88;--blu:#4488ff;--ylw:#ffd060;
+  --t1:#eceef8;--t2:#7880a0;--t3:#3a3e54;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans Thai',sans-serif;
+  --r:16px;--rs:10px;--rx:50px;--nh:68px;
+}
+body.day{
+  --bg0:#eef0f8;--bg1:#f4f5fc;--bg2:#fff;--bg3:#eceef8;--bg4:#e0e3f2;
+  --s1:rgba(0,0,0,.04);--s2:rgba(0,0,0,.06);--s3:rgba(0,0,0,.10);
+  --b1:rgba(60,80,180,.10);--b2:rgba(60,80,180,.18);--b3:rgba(60,80,180,.30);
+  --acc:#0052cc;--adim:rgba(0,82,204,.12);--aglow:rgba(0,82,204,.25);--afg:#fff;
+  --red:#cc2222;--grn:#0a7a40;--blu:#1a55cc;--ylw:#b87800;
+  --t1:#1a1d35;--t2:#5a5f80;--t3:#aab0cc;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans);background:var(--bg0);color:var(--t1);
+  max-width:430px;margin:0 auto;min-height:100%;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
+/* blobs */
+.blob{display:none}
+body.night .blob{
+  display:block;position:fixed;border-radius:50%;
+  filter:blur(80px);pointer-events:none;z-index:0;
+  animation:bF 9s ease-in-out infinite alternate;
+}
+.b1{width:280px;height:280px;top:-50px;right:-70px;background:rgba(0,229,255,.05);animation-delay:0s}
+.b2{width:240px;height:240px;bottom:140px;left:-50px;background:rgba(68,255,136,.04);animation-delay:3s}
+.b3{width:180px;height:180px;top:55%;right:-30px;background:rgba(255,85,85,.04);animation-delay:6s}
+@keyframes bF{from{transform:translateY(0) scale(1)}to{transform:translateY(-28px) scale(1.07)}}
+
+/* ═══ HEADER ════════════════════════════ */
+.header{
+  position:sticky;top:0;z-index:80;
+  background:rgba(6,6,8,.9);border-bottom:1px solid var(--b1);
+  padding-top:max(env(safe-area-inset-top),0px);
+  backdrop-filter:blur(28px) saturate(200%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+  transition:background .3s;
+}
+body.day .header{background:rgba(238,240,248,.92)}
+.hi{padding:11px 15px 10px}
+.ht{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.brand{display:flex;align-items:center;gap:10px}
+.blogo{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 0 18px var(--aglow)}
+body.day .blogo{box-shadow:0 3px 10px var(--aglow)}
+.bname{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--t1);letter-spacing:.5px;line-height:1}
+.bver{font-size:8px;color:var(--acc);letter-spacing:2.5px;text-transform:uppercase;margin-top:3px;font-weight:600}
+.hr{display:flex;align-items:center;gap:7px}
+.dpill{text-align:right;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:5px 10px}
+.dl1{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--t1);line-height:1.3}
+.dl2{font-size:9px;color:var(--t3);margin-top:1px;font-family:var(--mono)}
+.hibtn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--s2);border:1px solid var(--b1);border-radius:10px;cursor:pointer;font-size:17px;flex-shrink:0}
+.hibtn:active{background:var(--s3);transform:scale(.88)}
+.sr{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.st{background:var(--s1);border:1px solid var(--b1);border-radius:9px;padding:7px 4px;text-align:center;overflow:hidden;position:relative}
+.st::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:1.5px;background:var(--acc);opacity:.4;border-radius:1px}
+.sv{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--acc);line-height:1}
+.sl{font-size:8px;color:var(--t3);margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+
+/* ═══ MAIN ══════════════════════════════ */
+.main{padding:13px 13px calc(var(--nh) + 22px + env(safe-area-inset-bottom));position:relative;z-index:1}
+.slbl{font-size:9px;color:var(--t3);letter-spacing:2.5px;text-transform:uppercase;margin:15px 0 7px;font-weight:600;display:flex;align-items:center;gap:8px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--b1)}
+.div{height:1px;background:var(--b1);margin:13px 0}
+
+/* ═══ SIZE PANEL ════════════════════════ */
+.szp{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:13px;box-shadow:0 6px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.05)}
+body.day .szp{box-shadow:0 3px 16px rgba(0,0,0,.05)}
+.szrow{display:flex;gap:8px;margin-bottom:11px}
+.szrow input{flex:1;margin:0}
+.cgrp{margin-bottom:9px}.cgrp:last-child{margin-bottom:0}
+.clbl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:600}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:7px 13px;font-size:12px;font-weight:600;border-radius:var(--rx);cursor:pointer;user-select:none;white-space:nowrap;font-family:var(--mono);letter-spacing:.3px;transition:transform .1s,opacity .1s}
+.chip:active{transform:scale(.88);opacity:.8}
+.cf{background:var(--adim);border:1.5px solid var(--acc);color:var(--acc)}
+body.day .cf{background:rgba(0,82,204,.08);border-color:rgba(0,82,204,.3);color:var(--acc)}
+.cs{background:var(--s2);border:1.5px solid var(--b2);color:var(--t2)}
+
+/* ═══ INPUTS ════════════════════════════ */
+input,select{width:100%;padding:12px 13px;background:var(--s2);border:1.5px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--sans);font-size:14px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s}
+input::placeholder{color:var(--t3)}
+input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--adim)}
+select:focus{border-color:var(--acc)}
+select option{background:var(--bg2);color:var(--t1)}
+
+/* ═══ BUTTONS ═══════════════════════════ */
+.btn{padding:12px 16px;border:none;border-radius:var(--rs);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;-webkit-touch-callout:none;user-select:none;transition:transform .1s,opacity .1s}
+.btn:active{transform:scale(.94);opacity:.82}
+.bA{background:var(--acc);color:var(--afg);box-shadow:0 3px 16px var(--aglow)}
+.bA:active{box-shadow:0 1px 8px var(--aglow)}
+.bG{background:var(--s2);color:var(--t2);border:1.5px solid var(--b2)}
+.bG:active{background:var(--s3)}
+.bD{background:rgba(255,85,85,.12);color:var(--red);border:1.5px solid rgba(255,85,85,.22)}
+.bI{background:rgba(0,229,255,.08);color:var(--acc);border:1.5px solid rgba(0,229,255,.2)}
+.brow{display:flex;gap:7px}.brow .btn{flex:1}
+
+/* ═══ TABS ══════════════════════════════ */
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:3px;margin-bottom:9px}
+.twrap::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:6px;min-width:max-content;align-items:center}
+.tab{padding:8px 18px;font-size:12px;font-weight:600;border-radius:var(--rx);border:1.5px solid var(--b2);background:var(--s2);color:var(--t2);cursor:pointer;white-space:nowrap;-webkit-touch-callout:none;user-select:none;transition:transform .1s,background .2s,color .2s,border-color .2s}
+.tab:active{transform:scale(.94);opacity:.85}
+.tab.active{background:var(--acc);color:var(--afg);border-color:var(--acc);font-weight:700;box-shadow:0 3px 14px var(--aglow)}
+
+/* ── tab + add button ── */
+.tab-add{
+  width:34px;height:34px;border-radius:50%;
+  border:1.5px dashed var(--b3);background:none;
+  color:var(--t3);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:all .2s;-webkit-touch-callout:none;
+}
+.tab-add:active{background:var(--s2);color:var(--acc);border-color:var(--acc);transform:scale(.9)}
+
+/* ═══ TOOLBAR ═══════════════════════════ */
+.tbar{display:flex;gap:6px;margin-bottom:8px}
+.tbar .btn{flex:1;padding:9px 5px;font-size:11px}
+.srow{display:flex;gap:6px;margin-bottom:8px}
+.srow input{flex:1;margin:0}
+.srow select{flex:0 0 100px;margin:0;font-size:12px}
+
+/* ═══ PRODUCT GRID ══════════════════════ */
+#products{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.product{
+  padding:13px 4px 12px;font-size:11px;text-align:center;
+  border-radius:12px;background:var(--s2);border:2px solid var(--b1);
+  color:var(--t2);font-weight:500;position:relative;
+  cursor:pointer;word-break:break-all;line-height:1.4;
+  -webkit-touch-callout:none;user-select:none;touch-action:pan-y;
+  transition:transform .12s,background .12s,border-color .12s,color .12s,box-shadow .12s;
+}
+.product.active{
+  background:var(--acc);border-color:var(--acc);
+  color:var(--afg)!important;font-weight:700;
+  box-shadow:0 0 20px var(--aglow);transform:scale(1.05);
+}
+body.day .product.active{box-shadow:0 4px 16px var(--aglow)}
+.product:not(.active):active{background:var(--s3);transform:scale(.95)}
+.product .dx{position:absolute;top:3px;right:4px;font-size:10px;color:var(--t3);cursor:pointer;padding:3px;line-height:1;border-radius:4px;opacity:.45}
+.product.active .dx{color:var(--afg);opacity:.7}
+.product .ub{position:absolute;bottom:2px;right:4px;font-size:8px;font-family:var(--mono);font-weight:700;color:var(--acc)}
+.product.active .ub{color:var(--afg)}
+.pn{padding:0 12px;line-height:1.4;pointer-events:none}
+.eprod{text-align:center;color:var(--t3);font-size:12px;padding:28px 0;grid-column:1/-1}
+
+/* ── "+" add product tile ── */
+.prod-add-tile{
+  padding:13px 4px 12px;font-size:20px;text-align:center;
+  border-radius:12px;border:2px dashed var(--b3);
+  color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  min-height:54px;
+  -webkit-touch-callout:none;user-select:none;
+  transition:all .15s;
+}
+.prod-add-tile:active{background:var(--s2);color:var(--acc);border-color:var(--acc);transform:scale(.92)}
+
+/* ═══ ORDER CARDS ════════════════════════ */
+.ocard{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.2);animation:cIn .22s ease}
+@keyframes cIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.ohdr{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 13px;background:var(--s1);border-bottom:1px solid var(--b1)}
+.olft{flex:1;min-width:0}
+.okey{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--acc);line-height:1.3;word-break:break-all;cursor:pointer}
+.ots{font-size:9px;color:var(--t3);margin-top:3px;font-family:var(--mono)}
+.obdg{display:inline-flex;align-items:center;background:var(--adim);border:1px solid rgba(0,229,255,.2);color:var(--acc);font-family:var(--mono);font-size:10px;font-weight:700;border-radius:6px;padding:2px 8px;margin-top:4px}
+body.day .obdg{border-color:var(--b2)}
+.oacts{display:flex;gap:2px;margin-left:8px;flex-shrink:0}
+.abt{background:none;border:none;color:var(--t3);font-size:16px;cursor:pointer;padding:7px 8px;border-radius:8px;-webkit-touch-callout:none}
+.abt:active{background:var(--s3);transform:scale(.88);color:var(--t1)}
+.oitm{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;font-size:13px;color:var(--t2);border-bottom:1px solid var(--b1)}
+.oitm:last-child{border:none}
+.oitm:active{background:var(--s1)}
+.idl{font-size:12px;color:var(--t3);cursor:pointer;padding:5px 8px;border-radius:6px;margin-left:6px;flex-shrink:0;-webkit-touch-callout:none}
+.idl:active{background:rgba(255,85,85,.15);color:var(--red)}
+
+/* ═══ BOTTOM NAV ════════════════════════ */
+.bnav{
+  position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));
+  left:50%;transform:translateX(-50%);
+  width:calc(100% - 26px);max-width:402px;z-index:80;
+  background:rgba(12,12,18,.94);border:1px solid var(--b3);
+  border-radius:22px;padding:7px 9px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  backdrop-filter:blur(32px) saturate(200%);
+  -webkit-backdrop-filter:blur(32px) saturate(200%);
+  box-shadow:0 8px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);
+}
+body.day .bnav{background:rgba(255,255,255,.92);box-shadow:0 6px 30px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8)}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:14px;border:none;background:transparent;font-family:var(--sans);font-size:10px;font-weight:600;color:var(--t3);cursor:pointer;-webkit-touch-callout:none;user-select:none;transition:transform .1s,background .15s,color .15s}
+.nb:active{transform:scale(.86)}
+.ni{font-size:20px;line-height:1}
+.nu:active{background:rgba(68,136,255,.14);color:var(--blu)}
+.nc:active{background:rgba(68,255,136,.1);color:var(--grn)}
+.nx:active{background:rgba(255,85,85,.1);color:var(--red)}
+.nl:active{background:var(--s2);color:var(--t1)}
+
+/* ═══ LOCK ══════════════════════════════ */
+#lkScr{display:none;position:fixed;inset:0;background:var(--bg0);z-index:999;flex-direction:column;align-items:center;justify-content:center}
+#lkScr.show{display:flex}
+#lkScr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 45% at 50% 28%,rgba(0,229,255,.06),transparent 70%);pointer-events:none}
+.lkico{font-size:46px;margin-bottom:10px;animation:lkP 2.2s ease-in-out infinite}
+@keyframes lkP{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.lktit{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:4px;text-transform:uppercase;margin-bottom:26px}
+.lkdots{display:flex;gap:14px;margin-bottom:34px}
+.lkd{width:13px;height:13px;border-radius:50%;background:var(--bg4);border:1.5px solid var(--b3);transition:all .2s}
+.lkd.on{background:var(--acc);border-color:var(--acc);box-shadow:0 0 14px var(--aglow)}
+.lkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:232px}
+.lkk{padding:17px;text-align:center;background:var(--s2);border:1px solid var(--b2);border-radius:13px;font-size:21px;font-family:var(--mono);color:var(--t1);cursor:pointer;-webkit-touch-callout:none;user-select:none;transition:transform .1s,background .1s}
+.lkk:active{background:var(--s3);transform:scale(.88)}
+.lkk.sp{font-size:15px;color:var(--t2)}
+
+/* ═══ BOTTOM SHEET (generic) ════════════ */
+.sheet-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding-bottom:env(safe-area-inset-bottom)}
+.sheet-bg.show{display:flex}
+.sheet{background:var(--bg2);border:1px solid var(--b3);border-radius:22px 22px 18px 18px;padding:20px 18px calc(22px + env(safe-area-inset-bottom));width:100%;max-width:430px;box-shadow:0 -16px 50px rgba(0,0,0,.45);animation:shUp .26s cubic-bezier(.16,1,.3,1)}
+@keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sh-handle{width:34px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 16px}
+.sh-title{font-size:16px;font-weight:700;margin-bottom:14px;color:var(--t1)}
+.sh-sub{font-size:11px;color:var(--t3);margin-bottom:8px;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── quick-add sheet specific ── */
+.qa-tabs{display:flex;gap:6px;margin-bottom:14px}
+.qa-tab{flex:1;padding:9px;text-align:center;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--b2);background:var(--s2);color:var(--t2);transition:all .15s}
+.qa-tab.on{background:var(--acc);color:var(--afg);border-color:var(--acc)}
+.qa-pane{display:none}.qa-pane.on{display:block}
+
+/* cat list in sheet */
+.cat-list{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;max-height:180px;overflow-y:auto}
+.cat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--s1);border:1px solid var(--b1);border-radius:var(--rs);cursor:pointer;transition:background .15s}
+.cat-row:active{background:var(--s2)}
+.cat-row.sel{background:var(--adim);border-color:var(--acc);color:var(--acc);font-weight:600}
+.cat-row-name{font-size:13px}
+.cat-row-del{font-size:12px;color:var(--t3);padding:3px 7px;border-radius:5px;-webkit-touch-callout:none}
+.cat-row-del:active{background:rgba(255,85,85,.15);color:var(--red)}
+
+/* ═══ TOAST ═════════════════════════════ */
+#toast{position:fixed;bottom:calc(var(--nh) + 20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg3);color:var(--t1);border:1px solid var(--b3);padding:10px 20px;border-radius:var(--rx);font-size:13px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:400;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══ EMPTY OUTPUT ══════════════════════ */
+.eout{text-align:center;color:var(--t3);padding:38px 0;font-size:13px;line-height:2.2}
+.eout .big{font-size:38px;display:block;margin-bottom:6px;opacity:.45}
+
+/* ═══ EXPORT/IMPORT BUTTONS (footer) ══ */
+.footer-row{display:flex;gap:7px;margin-top:10px}
+.footer-row .btn{flex:1;font-size:12px;padding:10px}
+</style>
+</head>
+<body class="night">
+
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<!-- ═══ LOCK ═══ -->
+<div id="lkScr">
+  <div class="lkico">📦</div>
+  <div class="lktit">Packing Pro</div>
+  <div class="lkdots" id="lkDots">
+    <div class="lkd"></div><div class="lkd"></div>
+    <div class="lkd"></div><div class="lkd"></div><div class="lkd"></div>
+  </div>
+  <div class="lkgrid" id="lkGrid"></div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast"></div>
+
+<!-- ═══ QUICK-ADD SHEET ═══════════════════
+     แทนที่ collapsible ทั้งหมด
+     — Tab 1: เพิ่มสินค้า (เลือกหมวด + พิมพ์ชื่อ)
+     — Tab 2: จัดการหมวด
+═══════════════════════════════════════ -->
+<div class="sheet-bg" id="qaBg" onclick="closeQA(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sh-handle"></div>
+    <div class="qa-tabs">
+      <div class="qa-tab on" id="qaT0" onclick="switchQA(0)">➕ เพิ่มสินค้า</div>
+      <div class="qa-tab" id="qaT1" onclick="switchQA(1)">🗂 หมวด</div>
+    </div>
+
+    <!-- PANE 0: add product -->
+    <div class="qa-pane on" id="qaP0">
+      <div class="sh-sub">เลือกหมวด</div>
+      <div class="cat-list" id="qaCatList"></div>
+      <div class="sh-sub">ชื่อสินค้าใหม่</div>
+      <div class="brow" style="gap:8px">
+        <input id="qaProdIn" placeholder="เช่น ทอยสตอรี่, ดำ..." onkeypress="if(event.key==='Enter')qaSaveProd()">
+        <button class="btn bA" onclick="qaSaveProd()" style="padding:12px 16px">➕</button>
+      </div>
+    </div>
+
+    <!-- PANE 1: manage cats -->
+    <div class="qa-pane" id="qaP1">
+      <div class="sh-sub">หมวดทั้งหมด</div>
+      <div class="cat-list" id="qaMgmtList"></div>
+      <div class="sh-sub" style="margin-top:4px">เพิ่มหมวดใหม่</div>
+      <div class="brow" style="gap:8px">
+        <input id="qaCatIn" placeholder="ชื่อหมวด เช่น ลายการ์ตูน..." onkeypress="if(event.key==='Enter')qaSaveCat()">
+        <button class="btn bA" onclick="qaSaveCat()" style="padding:12px 16px">➕</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ EDIT MODAL (rename) ═══ -->
+<div class="sheet-bg" id="edBg" onclick="closeEd(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sh-handle"></div>
+    <div class="sh-title" id="edTitle">แก้ไข</div>
+    <input id="edIn" placeholder="">
+    <div class="brow" style="gap:9px;margin-top:10px">
+      <button class="btn bA" onclick="edOk()">ยืนยัน</button>
+      <button class="btn bG" onclick="closeEd()">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="hi">
+    <div class="ht">
+      <div class="brand">
+        <div class="blogo">📦</div>
+        <div><div class="bname">PACKING PRO</div><div class="bver">v8 · warehouse</div></div>
+      </div>
+      <div class="hr">
+        <div class="dpill"><div class="dl1" id="hd1">--/--/--</div><div class="dl2" id="hd2">--:--</div></div>
+        <div class="hibtn" id="thBtn" onclick="toggleTheme()">☀️</div>
+      </div>
+    </div>
+    <div class="sr">
+      <div class="st"><div class="sv" id="sO">0</div><div class="sl">ออเดอร์</div></div>
+      <div class="st"><div class="sv" id="sI">0</div><div class="sl">รายการ</div></div>
+      <div class="st"><div class="sv" id="sS">0</div><div class="sl">เลือก</div></div>
+      <div class="st"><div class="sv" id="sC">0</div><div class="sl">หมวด</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- SIZE PANEL -->
+  <div class="szp">
+    <div class="szrow">
+      <input id="szIn" placeholder="ขนาด / รหัสออเดอร์..." onkeypress="if(event.key==='Enter')addItems()">
+      <button class="btn bA" onclick="addItems()" style="font-size:15px;padding:12px 16px">✅</button>
+    </div>
+    <div class="cgrp">
+      <div class="clbl">ฟุต</div>
+      <div class="chips">
+        <div class="chip cf" onclick="setSize('3.5 ฟุต')">3.5″</div>
+        <div class="chip cf" onclick="setSize('4 ฟุต')">4″</div>
+        <div class="chip cf" onclick="setSize('5 ฟุต')">5″</div>
+        <div class="chip cf" onclick="setSize('6 ฟุต')">6″</div>
+        <div class="chip cf" onclick="setSize('3.5/5 ฟุต')">3.5/5″</div>
+        <div class="chip cf" onclick="setSize('5/6 ฟุต')">5/6″</div>
+      </div>
+    </div>
+    <div class="cgrp">
+      <div class="clbl">ไซส์เสื้อ</div>
+      <div class="chips">
+        <div class="chip cs" onclick="setSize('S')">S</div>
+        <div class="chip cs" onclick="setSize('M')">M</div>
+        <div class="chip cs" onclick="setSize('L')">L</div>
+        <div class="chip cs" onclick="setSize('XL')">XL</div>
+        <div class="chip cs" onclick="setSize('2XL')">2XL</div>
+        <div class="chip cs" onclick="setSize('3XL')">3XL</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS + add-category button -->
+  <div class="slbl">หมวดสินค้า</div>
+  <div class="twrap">
+    <div class="tabs" id="tabsEl"></div>
+  </div>
+
+  <!-- SEARCH + SORT -->
+  <div class="srow">
+    <input id="srch" placeholder="🔍 ค้นหาสินค้า..." oninput="renderProds()">
+    <select id="srt" onchange="renderProds()">
+      <option value="d">เรียงเดิม</option>
+      <option value="a">A–Z</option>
+      <option value="s">เลือกก่อน</option>
+    </select>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="tbar">
+    <button class="btn bI" onclick="selAll()">☑ ทั้งหมด</button>
+    <button class="btn bG" onclick="deselAll()">☐ ยกเลิก</button>
+    <button class="btn bG" onclick="flipSel()">↔ กลับ</button>
+  </div>
+
+  <!-- PRODUCTS (+ add tile at end) -->
+  <div id="products"></div>
+
+  <div class="div"></div>
+
+  <!-- OUTPUT -->
+  <div class="slbl">รายการแพ็กสินค้า</div>
+  <div id="output"></div>
+
+  <!-- export/import tucked at bottom -->
+  <div class="footer-row">
+    <button class="btn bI" onclick="expData()">💾 Export ข้อมูล</button>
+    <button class="btn bG" onclick="impData()">📂 Import ข้อมูล</button>
+  </div>
+
+</div>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<div class="bnav">
+  <button class="nb nu" id="undoBtn"><span class="ni">↩</span>Undo</button>
+  <button class="nb nc" onclick="copyAll()"><span class="ni">📋</span>Copy</button>
+  <button class="nb nx" onclick="clearAll()"><span class="ni">🗑</span>ล้าง</button>
+  <button class="nb nl" onclick="lockApp()"><span class="ni">🔒</span>ล็อก</button>
+</div>
+
+<script>
+'use strict';
+const LS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return(v!==null&&v!==undefined)?v:d}catch{return d}};
+const SS=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{toast('❌ Storage เต็ม — Export ก่อนนะครับ',3000)}};
+const $=id=>document.getElementById(id);
+
+let P  = LS('pp8_p',{'ลายใหม่':['ทอยสตอรี่','มิกกี้'],'ลายเก่า':['ดำ','บอย']});
+let D  = LS('pp8_d',{});
+let U  = LS('pp8_u',[]);
+if(!Array.isArray(U))U=[];
+let tab    = Object.keys(P)[0]||'';
+let sel    = new Set();
+let locked = LS('pp8_lk',false);
+let theme  = LS('pp8_th','night');
+/* which cat is selected inside quick-add sheet */
+let qaCat  = '';
+
+/* ── haptic ────────────────────────────── */
+const hap=(t='l')=>{try{if(navigator.vibrate)navigator.vibrate(t==='h'?30:10);}catch{}};
+
+/* ── theme ─────────────────────────────── */
+const applyTheme=t=>{document.body.className=t;theme=t;SS('pp8_th',t);$('thBtn').textContent=t==='night'?'☀️':'🌙';};
+const toggleTheme=()=>{hap();applyTheme(theme==='night'?'day':'night');};
+
+/* ── toast ─────────────────────────────── */
+let tT;
+const toast=(m,d=1900)=>{const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('show'),d);};
+
+/* ── clock ─────────────────────────────── */
+const pad=n=>String(n).padStart(2,'0');
+const todayStr=()=>{const n=new Date();return `${pad(n.getDate())}/${pad(n.getMonth()+1)}/${String(n.getFullYear()+543).slice(-2)}`;};
+const nowTime=()=>{const n=new Date();return `${pad(n.getHours())}:${pad(n.getMinutes())}`;};
+const tick=()=>{
+  const n=new Date();
+  const DW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const MO=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  $('hd1').textContent=`${DW[n.getDay()]} ${n.getDate()} ${MO[n.getMonth()]} ${n.getFullYear()+543}`;
+  $('hd2').textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+};
+
+/* ── lock ──────────────────────────────── */
+let lc='';
+const showApp=v=>document.querySelectorAll('.header,.main,.bnav').forEach(e=>e.style.display=v?'':'none');
+const initLock=()=>{showApp(!locked);$('lkScr').classList.toggle('show',locked);if(locked)buildCalc();};
+const buildCalc=()=>{
+  $('lkGrid').innerHTML='';
+  ['1','2','3','4','5','6','7','8','9','⌫','0','↵'].forEach(k=>{
+    const d=document.createElement('div');
+    d.className='lkk'+(['⌫','↵'].includes(k)?' sp':'');d.textContent=k;
+    d.addEventListener('click',()=>{
+      hap();
+      if(k==='⌫')lc=lc.slice(0,-1);else if(k!=='↵')lc+=k;
+      document.querySelectorAll('.lkd').forEach((x,i)=>x.classList.toggle('on',i<lc.length));
+      if(lc==='98994'){locked=false;SS('pp8_lk',false);lc='';$('lkScr').classList.remove('show');showApp(true);toast('🔓 ปลดล็อกแล้ว');hap('h');}
+      if(lc.length>5)lc='';
+    });
+    $('lkGrid').appendChild(d);
+  });
+};
+const lockApp=()=>{hap();locked=true;SS('pp8_lk',true);lc='';document.querySelectorAll('.lkd').forEach(d=>d.classList.remove('on'));showApp(false);$('lkScr').classList.add('show');buildCalc();};
+
+/* ── stats ─────────────────────────────── */
+const updStats=()=>{
+  $('sO').textContent=Object.keys(D).length;
+  $('sI').textContent=Object.values(D).reduce((s,a)=>s+a.length,0);
+  $('sS').textContent=sel.size;
+  $('sC').textContent=Object.keys(P).length;
+};
+
+/* ── save ──────────────────────────────── */
+const saveD=()=>{SS('pp8_d',D);SS('pp8_u',U);};
+const saveP=()=>SS('pp8_p',P);
+
+/* ── size chips ─────────────────────────── */
+const setSize=v=>{hap();$('szIn').value=v;$('szIn').focus();toast('📐 '+v);};
+
+/* ── key builder ─────────────────────────── */
+const buildKey=r=>`${r.trim()} ${todayStr()} ${nowTime()}`;
+const parseKey=k=>{const m=k.match(/^(.*?)\s+(\d{2}\/\d{2}\/\d{2})\s+(\d{2}:\d{2})$/);return m?{label:m[1].trim(),date:m[2],time:m[3]}:{label:k,date:'',time:''};};
+
+/* ══════════════════════════════════════════
+   QUICK-ADD SHEET
+   — replaces all old collapsible UI
+══════════════════════════════════════════ */
+let qaPane=0;
+
+const openQA=()=>{
+  hap();
+  /* default: select current tab as cat */
+  qaCat=tab;
+  renderQAPane();
+  $('qaBg').classList.add('show');
+};
+const closeQA=(e)=>{if(!e||e.target===$('qaBg'))$('qaBg').classList.remove('show');};
+const switchQA=i=>{
+  qaPane=i;
+  [0,1].forEach(j=>{
+    $('qaT'+j).classList.toggle('on',j===i);
+    $('qaP'+j).classList.toggle('on',j===i);
+  });
+  renderQAPane();
+};
+
+const renderQAPane=()=>{
+  if(qaPane===0)renderQACatList();
+  else renderQAMgmtList();
+};
+
+/* cat selector list in pane 0 */
+const renderQACatList=()=>{
+  const el=$('qaCatList');el.innerHTML='';
+  if(!qaCat||!P[qaCat])qaCat=Object.keys(P)[0]||'';
+  Object.keys(P).forEach(c=>{
+    const r=document.createElement('div');
+    r.className='cat-row'+(c===qaCat?' sel':'');
+    r.innerHTML=`<span class="cat-row-name">${c} <small style="color:var(--t3);font-size:10px">(${P[c].length})</small></span>`;
+    r.addEventListener('click',()=>{qaCat=c;renderQACatList();hap();});
+    el.appendChild(r);
+  });
+};
+
+/* cat management list in pane 1 */
+const renderQAMgmtList=()=>{
+  const el=$('qaMgmtList');el.innerHTML='';
+  Object.keys(P).forEach(c=>{
+    const r=document.createElement('div');
+    r.className='cat-row'+(c===tab?' sel':'');
+    r.innerHTML=`<span class="cat-row-name">${c} <small style="color:var(--t3);font-size:10px">(${P[c].length})</small></span><span class="cat-row-del">🗑</span>`;
+    r.querySelector('.cat-row-del').addEventListener('click',e=>{
+      e.stopPropagation();
+      if(Object.keys(P).length<=1)return toast('⚠️ ต้องมีอย่างน้อย 1 หมวด');
+      if(!confirm('ลบหมวด "'+c+'"?'))return;
+      if(tab===c)tab=Object.keys(P).filter(k=>k!==c)[0]||'';
+      delete P[c];Object.keys(D).forEach(k=>{D[k]=D[k].filter(x=>!P[c]||true);}); // products cleaned on render
+      sel.clear();saveP();renderAll();renderQAMgmtList();toast('🗑 ลบหมวด '+c);
+    });
+    r.addEventListener('click',e=>{if(e.target.classList.contains('cat-row-del'))return;hap();tab=c;renderTabs();renderProds();renderQAMgmtList();toast('📂 '+c);});
+    el.appendChild(r);
+  });
+};
+
+/* save new product */
+const qaSaveProd=()=>{
+  const n=$('qaProdIn').value.trim();
+  if(!n)return toast('⚠️ พิมพ์ชื่อสินค้าก่อนนะครับ');
+  if(!qaCat||!P[qaCat]){toast('⚠️ เลือกหมวดก่อน');return;}
+  if(P[qaCat].includes(n))return toast('⚠️ มีสินค้านี้ใน "'+qaCat+'" แล้ว');
+  P[qaCat].push(n);saveP();$('qaProdIn').value='';
+  tab=qaCat;renderAll();renderQACatList();
+  toast('✅ เพิ่ม "'+n+'" → '+qaCat);hap('h');
+  $('qaProdIn').focus();
+};
+
+/* save new category */
+const qaSaveCat=()=>{
+  const n=$('qaCatIn').value.trim();
+  if(!n)return toast('⚠️ พิมพ์ชื่อหมวดก่อนนะครับ');
+  if(P[n])return toast('⚠️ มีหมวดนี้แล้ว');
+  P[n]=[];saveP();$('qaCatIn').value='';
+  tab=n;qaCat=n;renderAll();renderQAMgmtList();
+  toast('✅ เพิ่มหมวด "'+n+'"');hap('h');
+  $('qaCatIn').focus();
+};
+
+/* ══════════════════════════════════════════
+   EDIT SHEET (rename)
+══════════════════════════════════════════ */
+let edCb=null;
+const openEd=(title,def,cb)=>{
+  $('edTitle').textContent=title;$('edIn').value=def||'';
+  edCb=cb;$('edBg').classList.add('show');
+  setTimeout(()=>$('edIn').focus(),120);
+};
+const closeEd=(e)=>{if(!e||e.target===$('edBg')){$('edBg').classList.remove('show');edCb=null;}};
+const edOk=()=>{const v=$('edIn').value.trim();if(edCb)edCb(v);closeEd();};
+$('edIn').addEventListener('keypress',e=>{if(e.key==='Enter')edOk();});
+
+/* ═══ PRODUCTS ════════════════════════════ */
+const getList=()=>{
+  if(!P[tab])return[];
+  const k=$('srch').value.trim().toLowerCase();
+  const s=$('srt').value;
+  let l=P[tab].filter(p=>p.toLowerCase().includes(k));
+  if(s==='a')l=[...l].sort((a,b)=>a.localeCompare(b,'th'));
+  if(s==='s')l=[...l].sort((a,b)=>(sel.has(b)?1:0)-(sel.has(a)?1:0));
+  return l;
+};
+const selAll=()=>{hap();getList().forEach(p=>sel.add(p));renderProds();toast('☑ เลือกทั้งหมด');};
+const deselAll=()=>{hap();sel.clear();renderProds();toast('☐ ยกเลิกทั้งหมด');};
+const flipSel=()=>{hap();getList().forEach(p=>sel.has(p)?sel.delete(p):sel.add(p));renderProds();toast('↔ กลับการเลือก');};
+const togProd=p=>{hap();sel.has(p)?sel.delete(p):sel.add(p);renderProds();};
+const delProd=p=>{
+  if(!confirm('ลบ "'+p+'"?'))return;
+  const i=P[tab].indexOf(p);if(i>-1)P[tab].splice(i,1);
+  sel.delete(p);Object.keys(D).forEach(k=>{D[k]=D[k].filter(x=>x!==p)});
+  saveP();saveD();renderAll();toast('🗑 ลบ '+p);
+};
+const renameProd=p=>{
+  openEd('แก้ไขชื่อสินค้า',p,nn=>{
+    if(!nn||nn===p)return;
+    if(P[tab].includes(nn))return toast('⚠️ มีชื่อนี้แล้ว');
+    const i=P[tab].indexOf(p);if(i>-1)P[tab][i]=nn;
+    Object.keys(D).forEach(k=>{D[k]=D[k].map(x=>x===p?nn:x)});
+    if(sel.has(p)){sel.delete(p);sel.add(nn);}
+    saveP();saveD();renderAll();toast('✏️ เปลี่ยนชื่อแล้ว');
+  });
+};
+
+const renderProds=()=>{
+  const el=$('products');el.innerHTML='';
+  const list=getList();
+  list.forEach(p=>{
+    const isA=sel.has(p);
+    const d=document.createElement('div');
+    d.className='product'+(isA?' active':'');
+    let used=0;Object.values(D).forEach(a=>{if(a.includes(p))used++;});
+    d.innerHTML=`<span class="dx">✕</span><div class="pn">${p}</div>${used?`<span class="ub">${used}×</span>`:''}`;
+    let moved=false,sx=0,cx=0;
+    d.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;cx=sx;moved=false;},{passive:true});
+    d.addEventListener('touchmove',e=>{cx=e.touches[0].clientX;const dx=cx-sx;if(Math.abs(dx)>6)moved=true;if(dx<0)d.style.transform=`translateX(${Math.max(dx,-110)}px)`;},{passive:true});
+    d.addEventListener('touchend',()=>{const dx=cx-sx;d.style.transform='';if(dx<-75){delProd(p);return;}if(!moved)togProd(p);});
+    d.addEventListener('click',e=>{if(e.target.classList.contains('dx'))return;if(!('ontouchstart' in window))togProd(p);});
+    d.querySelector('.dx').addEventListener('touchend',e=>{e.stopPropagation();e.preventDefault();delProd(p);});
+    d.querySelector('.dx').addEventListener('click',e=>{e.stopPropagation();delProd(p);});
+    d.addEventListener('dblclick',e=>{e.preventDefault();renameProd(p);});
+    el.appendChild(d);
+  });
+  /* ➕ add-product tile at end */
+  const add=document.createElement('div');
+  add.className='prod-add-tile';add.textContent='+';
+  add.title='เพิ่มสินค้าใหม่';
+  add.addEventListener('click',()=>{qaCat=tab;switchQA(0);openQA();});
+  el.appendChild(add);
+  updStats();
+};
+
+/* ═══ TABS ════════════════════════════════ */
+const renderTabs=()=>{
+  const el=$('tabsEl');el.innerHTML='';
+  Object.keys(P).forEach(cat=>{
+    const d=document.createElement('div');
+    d.className='tab'+(cat===tab?' active':'');
+    d.textContent=cat;
+    d.addEventListener('click',()=>{hap();tab=cat;sel.clear();$('srch').value='';renderTabs();renderProds();});
+    el.appendChild(d);
+  });
+  /* ＋ add-category button */
+  const plus=document.createElement('div');
+  plus.className='tab-add';plus.innerHTML='＋';plus.title='เพิ่มหมวดใหม่';
+  plus.addEventListener('click',()=>{switchQA(1);openQA();});
+  el.appendChild(plus);
+};
+
+/* ═══ ADD ITEMS ═══════════════════════════ */
+const addItems=()=>{
+  const raw=$('szIn').value.trim();
+  if(!raw)return toast('⚠️ ระบุขนาด/รหัส');
+  if(!sel.size)return toast('⚠️ เลือกสินค้าก่อน');
+  const key=buildKey(raw);
+  U.push(JSON.stringify(D));if(U.length>30)U.shift();
+  if(!D[key])D[key]=[];
+  let added=0;sel.forEach(p=>{if(!D[key].includes(p)){D[key].push(p);added++;}});
+  sel.clear();$('szIn').value='';
+  saveD();renderProds();renderOut();
+  hap('h');toast(`✅ เพิ่ม ${added} รายการ → ${raw}`);
+};
+
+/* ═══ UNDO ════════════════════════════════ */
+const undoFn=()=>{if(!U.length)return toast('⚠️ ไม่มีอะไร Undo');D=JSON.parse(U.pop());saveD();renderOut();toast('↩ Undo แล้ว');hap();};
+$('undoBtn').addEventListener('click',undoFn);
+
+/* ═══ CLEAR ═══════════════════════════════ */
+const clearAll=()=>{if(!Object.keys(D).length)return toast('⚠️ ไม่มีรายการ');if(!confirm('ล้างรายการทั้งหมด?'))return;U.push(JSON.stringify(D));D={};saveD();renderOut();toast('🗑 ล้างแล้ว');};
+
+/* ═══ ORDER ACTIONS ═══════════════════════ */
+const ESC=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+const delOrder=key=>{if(!confirm('ลบออเดอร์นี้?'))return;U.push(JSON.stringify(D));delete D[key];saveD();renderOut();toast('🗑 ลบแล้ว');};
+const delItem=(key,item)=>{U.push(JSON.stringify(D));D[key]=D[key].filter(x=>x!==item);if(!D[key].length)delete D[key];saveD();renderOut();};
+const renameOrder=oldKey=>{
+  openEd('แก้ไขออเดอร์',oldKey,nk=>{
+    if(!nk||nk===oldKey)return;
+    if(D[nk])return toast('⚠️ มีออเดอร์นี้แล้ว');
+    D[nk]=D[oldKey];delete D[oldKey];saveD();renderOut();toast('✏️ เปลี่ยนชื่อแล้ว');
+  });
+};
+
+/* ═══ COPY ════════════════════════════════ */
+const fbCopy=t=>{const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('📋 คัดลอกแล้ว');}catch{}document.body.removeChild(ta);};
+const copyOrder=key=>{const{label,date,time}=parseKey(key);let t=`${label} ${date} ${time}\n`;D[key].forEach(i=>t+='- '+i+'\n');navigator.clipboard.writeText(t.trim()).then(()=>{hap();toast('📋 คัดลอกแล้ว');}).catch(()=>fbCopy(t));};
+const copyAll=()=>{
+  const keys=Object.keys(D);if(!keys.length)return toast('⚠️ ไม่มีรายการ');
+  let t='';keys.forEach(k=>{const{label,date,time}=parseKey(k);t+=`${label} ${date} ${time}\n`;D[k].forEach(i=>t+='- '+i+'\n');t+='\n';});
+  navigator.clipboard.writeText(t.trim()).then(()=>{hap('h');toast('📋 คัดลอกทั้งหมดแล้ว');}).catch(()=>fbCopy(t));
+};
+
+/* ═══ RENDER OUTPUT ══════════════════════ */
+const renderOut=()=>{
+  const el=$('output');el.innerHTML='';
+  const keys=Object.keys(D);
+  if(!keys.length){el.innerHTML='<div class="eout"><span class="big">📭</span>ยังไม่มีรายการ<br><small>เลือกสินค้า ใส่ขนาด แล้วกด ✅</small></div>';updStats();return;}
+  keys.forEach(key=>{
+    const{label,date,time}=parseKey(key);
+    const card=document.createElement('div');card.className='ocard';
+    const ke=ESC(key);
+    card.innerHTML=`
+      <div class="ohdr">
+        <div class="olft">
+          <div class="okey" ondblclick="renameOrder('${ke}')">${label}</div>
+          <div class="ots">${date?date+' · '+time:''}</div>
+          <div class="obdg">📦 ${D[key].length} ชิ้น</div>
+        </div>
+        <div class="oacts">
+          <button class="abt" onclick="copyOrder('${ke}')">📋</button>
+          <button class="abt" onclick="delOrder('${ke}')" style="color:var(--red)">🗑</button>
+        </div>
+      </div>
+      <div class="oitems-wrap"></div>`;
+    const wrap=card.querySelector('.oitems-wrap');
+    D[key].forEach(item=>{
+      const row=document.createElement('div');row.className='oitm';
+      const ie=ESC(item);
+      row.innerHTML=`<span>${item}</span><span class="idl" onclick="delItem('${ke}','${ie}')">✕</span>`;
+      wrap.appendChild(row);
+    });
+    el.appendChild(card);
+  });
+  updStats();
+};
+
+/* ═══ EXPORT / IMPORT ════════════════════ */
+const expData=()=>{const blob=new Blob([JSON.stringify({products:P,data:D},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);const n=new Date();a.download=`packing_${n.getDate()}-${n.getMonth()+1}-${n.getFullYear()}.json`;a.click();URL.revokeObjectURL(a.href);toast('💾 Export แล้ว');};
+const impData=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const o=JSON.parse(ev.target.result);if(o.products)P=o.products;if(o.data)D=o.data;tab=Object.keys(P)[0]||'';saveP();saveD();renderAll();toast('✅ Import สำเร็จ');}catch{toast('❌ ไฟล์ไม่ถูกต้อง');}};r.readAsText(f);};inp.click();};
+
+/* ═══ RENDER ALL ══════════════════════════ */
+const renderAll=()=>{renderTabs();renderProds();renderOut();};
+
+/* ═══ INIT ════════════════════════════════ */
+applyTheme(theme);
+tick();setInterval(tick,30000);
+initLock();
+renderAll();
+</script>
+</body>
+</html>
